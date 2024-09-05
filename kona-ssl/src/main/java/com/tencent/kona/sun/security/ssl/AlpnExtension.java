@@ -522,9 +522,14 @@ final class AlpnExtension {
             // The producing happens in client side only.
             ClientHandshakeContext chc = (ClientHandshakeContext)context;
 
-            // Please don't use the previous negotiated application protocol.
-            chc.applicationProtocol = "";
-            chc.conContext.applicationProtocol = "";
+            // Use the previous negotiated application protocol.
+            String applicationProtocol = "";
+            AlpnExtension.AlpnSpec alpnSpec = (AlpnSpec) chc.handshakeExtensions.get(SSLExtension.CH_ALPN);
+            if(alpnSpec!= null){
+                applicationProtocol = alpnSpec.applicationProtocols.get(0);
+            }
+            chc.applicationProtocol = applicationProtocol;
+            chc.conContext.applicationProtocol = applicationProtocol;
         }
     }
 }
